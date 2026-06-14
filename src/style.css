@@ -1,0 +1,339 @@
+/* 全局样式模块：定义赛博贪吃蛇的布局、面板、控件和画布外框。 */
+
+:root {
+  color: #ecf8ff;
+  background: #05060a;
+  font-family:
+    Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  letter-spacing: 0;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#app {
+  min-height: 100%;
+  margin: 0;
+}
+
+body {
+  min-width: 320px;
+  background:
+    radial-gradient(circle at 18% 18%, rgba(63, 255, 234, 0.13), transparent 34%),
+    radial-gradient(circle at 82% 74%, rgba(255, 43, 214, 0.12), transparent 32%),
+    radial-gradient(circle at 48% 52%, rgba(255, 213, 74, 0.06), transparent 40%),
+    linear-gradient(135deg, #05060a 0%, #0b0d12 48%, #15100d 100%);
+  color: #ecf8ff;
+}
+
+button,
+input {
+  font: inherit;
+  letter-spacing: 0;
+}
+
+button {
+  border: 1px solid rgba(63, 255, 234, 0.45);
+  border-radius: 8px;
+  color: #ecf8ff;
+  background: rgba(9, 15, 22, 0.92);
+  cursor: pointer;
+  transition:
+    transform 160ms ease,
+    border-color 160ms ease,
+    box-shadow 160ms ease,
+    color 160ms ease;
+}
+
+button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: #ffd54a;
+  box-shadow: 0 0 22px rgba(255, 213, 74, 0.2);
+}
+
+button:disabled {
+  cursor: not-allowed;
+  opacity: 0.45;
+}
+
+.app-shell {
+  /* 主响应式布局：左侧方形游戏棋盘，右侧控制面板。 */
+  width: min(1180px, calc(100% - 32px), calc(100vh + 210px));
+  min-height: 100vh;
+  margin: 0 auto;
+  padding: 28px 0;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 20px;
+  align-items: center;
+}
+
+.game-zone {
+  min-width: 0;
+}
+
+.hero-bar {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: end;
+  margin-bottom: 14px;
+}
+
+.eyebrow {
+  margin: 0 0 6px;
+  color: #3fffea;
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0;
+}
+
+h1 {
+  margin: 0;
+  font-size: 2.35rem;
+  line-height: 1.05;
+  color: #ffffff;
+  text-shadow:
+    0 0 12px rgba(63, 255, 234, 0.45),
+    0 0 28px rgba(255, 43, 214, 0.28);
+}
+
+.status-chip,
+.panel-heading,
+.button-row button,
+.primary-action {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.status-chip {
+  min-height: 38px;
+  padding: 8px 12px;
+  border: 1px solid rgba(255, 75, 118, 0.5);
+  border-radius: 8px;
+  background: rgba(18, 9, 16, 0.86);
+  color: #ff7a98;
+  white-space: nowrap;
+}
+
+.status-chip.online {
+  border-color: rgba(39, 245, 138, 0.55);
+  background: rgba(6, 22, 17, 0.88);
+  color: #27f58a;
+}
+
+.arena-frame {
+  /* 画布外层视觉框；不同游戏状态会改变边框和发光反馈。 */
+  position: relative;
+  overflow: hidden;
+  border: 1px solid rgba(63, 255, 234, 0.5);
+  border-radius: 8px;
+  background: #06070b;
+  box-shadow:
+    0 0 0 1px rgba(255, 43, 214, 0.16) inset,
+    0 24px 70px rgba(0, 0, 0, 0.45),
+    0 0 44px rgba(35, 184, 255, 0.16);
+}
+
+.arena-frame::before {
+  content: none;
+}
+
+.arena-frame.running {
+  border-color: rgba(39, 245, 138, 0.72);
+}
+
+.arena-frame.over {
+  border-color: rgba(255, 75, 118, 0.85);
+  box-shadow:
+    0 0 0 1px rgba(255, 75, 118, 0.22) inset,
+    0 24px 70px rgba(0, 0, 0, 0.5),
+    0 0 46px rgba(255, 75, 118, 0.22);
+}
+
+.game-canvas {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1;
+}
+
+.game-overlay {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  text-align: center;
+  background: rgba(4, 6, 11, 0.5);
+}
+
+.game-overlay span {
+  color: #ffd54a;
+  font-size: 0.9rem;
+  font-weight: 800;
+}
+
+.game-overlay strong {
+  color: #ffffff;
+  font-size: 2rem;
+  text-shadow:
+    0 0 12px rgba(63, 255, 234, 0.7),
+    0 0 28px rgba(255, 43, 214, 0.4);
+}
+
+.primary-action {
+  min-width: 126px;
+  min-height: 42px;
+  padding: 10px 16px;
+  color: #07100d;
+  border-color: #27f58a;
+  background: linear-gradient(135deg, #27f58a, #3fffea);
+  font-weight: 900;
+}
+
+.control-deck {
+  /* 侧边栏纵向排列玩家控制、实时数据和排行榜记录。 */
+  display: grid;
+  gap: 14px;
+}
+
+.pilot-panel,
+.stats-grid {
+  border: 1px solid rgba(236, 248, 255, 0.14);
+  border-radius: 8px;
+  background: rgba(7, 10, 16, 0.84);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+}
+
+.pilot-panel {
+  padding: 16px;
+}
+
+.panel-heading {
+  width: 100%;
+  justify-content: flex-start;
+  margin-bottom: 14px;
+  color: #3fffea;
+  font-weight: 850;
+}
+
+.input-field {
+  display: grid;
+  gap: 7px;
+  color: rgba(236, 248, 255, 0.75);
+  font-size: 0.92rem;
+}
+
+.input-field input {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid rgba(63, 255, 234, 0.42);
+  border-radius: 8px;
+  outline: none;
+  color: #ffffff;
+  background: rgba(4, 7, 11, 0.92);
+}
+
+.input-field input:focus {
+  border-color: #ffd54a;
+  box-shadow: 0 0 0 3px rgba(255, 213, 74, 0.14);
+}
+
+.button-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.button-row button {
+  min-height: 40px;
+  padding: 9px 10px;
+}
+
+.stats-grid {
+  padding: 12px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+
+.stat-cell {
+  min-height: 96px;
+  padding: 12px;
+  display: grid;
+  align-content: space-between;
+  border: 1px solid rgba(63, 255, 234, 0.16);
+  border-radius: 8px;
+  background: linear-gradient(145deg, rgba(11, 17, 24, 0.9), rgba(20, 12, 22, 0.72));
+}
+
+.stat-cell svg {
+  color: #ff2bd6;
+}
+
+.stat-cell span {
+  color: rgba(236, 248, 255, 0.66);
+  font-size: 0.82rem;
+}
+
+.stat-cell strong {
+  color: #ffffff;
+  font-size: 1.45rem;
+  line-height: 1;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 940px) {
+  /* 在窄屏下把桌面双栏布局折叠为更适合移动端的单栏。 */
+  .app-shell {
+    width: min(720px, calc(100% - 24px));
+    grid-template-columns: 1fr;
+    align-items: start;
+    padding: 18px 0 28px;
+  }
+
+  .hero-bar {
+    align-items: start;
+    flex-direction: column;
+  }
+
+  h1 {
+    font-size: 2rem;
+  }
+}
+
+@media (max-width: 520px) {
+  .app-shell {
+    width: calc(100% - 18px);
+  }
+
+  h1 {
+    font-size: 1.7rem;
+  }
+
+  .status-chip {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .game-overlay strong {
+    font-size: 1.45rem;
+  }
+
+  .stats-grid,
+  .button-row {
+    grid-template-columns: 1fr;
+  }
+}
